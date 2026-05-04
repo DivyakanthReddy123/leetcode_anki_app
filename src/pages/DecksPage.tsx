@@ -2,7 +2,7 @@ import {
   BarChart3,
   BookOpen,
   Download,
-  HelpCircle,
+  UserRound,
   Menu,
   MoreVertical,
   Plus,
@@ -142,7 +142,7 @@ export default function DecksPage() {
               <DrawerItem icon={<BookOpen size={18} />} label="Card Browser" onClick={() => navigateAndClose('/browser')} />
               <DrawerItem icon={<BarChart3 size={18} />} label="Statistics" onClick={() => navigateAndClose('/stats')} />
               <DrawerItem icon={<Settings size={18} />} label="Settings" onClick={() => navigateAndClose('/settings')} />
-              <DrawerItem icon={<HelpCircle size={18} />} label="Help" onClick={() => { setDrawerOpen(false); showMessage('Help page coming soon.'); }} />
+              <DrawerItem icon={<UserRound size={18} />} label="About" onClick={() => navigateAndClose('/about')} />
             </nav>
           </aside>
         </div>

@@ -1,7 +1,7 @@
 import {
   BarChart3,
   BookOpen,
-  HelpCircle,
+  UserRound,
   Menu,
   Settings as SettingsIcon,
   X,
@@ -83,7 +83,7 @@ export default function InlineHeader({ title, subtitle, actions }: InlineHeaderP
               <DrawerItem icon={<BookOpen size={18} />} label="Card Browser" onClick={() => go('/browser')} />
               <DrawerItem icon={<BarChart3 size={18} />} label="Statistics" onClick={() => go('/stats')} />
               <DrawerItem icon={<SettingsIcon size={18} />} label="Settings" onClick={() => go('/settings')} />
-              <DrawerItem icon={<HelpCircle size={18} />} label="Help" onClick={() => { setDrawerOpen(false); showMessage('Help page coming soon.'); }} />
+              <DrawerItem icon={<UserRound size={18} />} label="About" onClick={() => go('/about')} />
             </nav>
           </aside>
         </div>
