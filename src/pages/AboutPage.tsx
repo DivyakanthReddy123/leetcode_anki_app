@@ -13,7 +13,7 @@ const C = {
 export default function AboutPage() {
   return (
     <main style={{ minHeight: '100dvh', background: C.bg, color: C.ink, fontFamily: 'DM Sans, Inter, system-ui, sans-serif' }}>
-      <InlineHeader title="       About" subtitle="       Why this app exists" />
+      <InlineHeader title="About" subtitle="Why this app exists" />
 
       <section style={{ width: 'min(980px, calc(100vw - 28px))', margin: '0 auto', padding: '22px 0 48px' }}>
         <div style={{ display: 'grid', gap: 22, justifyItems: 'center' }}>
@@ -22,7 +22,7 @@ export default function AboutPage() {
             title="AI Developer • NY"
             handle="divyakanthreddy"
             status="Online"
-            contactText=" HI !! "
+            contactText="HI!!"
             avatarUrl="/divya1.png"
             onContactClick={() => {
               window.location.href = 'mailto:kanth.buchupalle@gmail.com';
