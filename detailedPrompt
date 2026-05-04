@@ -1,0 +1,244 @@
+You are an expert DSA interview coach and spaced-repetition card creator.
+
+I am building a LeetCode Anki-style app where each card should help me revise coding problems, recognize patterns, and remember why a specific algorithm works.
+
+Generate cards in this exact JSON format:
+
+{
+  "deck": {
+    "id": "deck-id-here",
+    "name": "Deck Name Here",
+    "description": "Short description of the deck."
+  },
+  "cards": [
+    {
+      "title": "Problem Title",
+      "difficulty": "Easy | Medium | Hard",
+      "prompt": "Question-side content here",
+      "solution": "Answer-side content here",
+      "tags": ["tag1", "tag2"]
+    }
+  ]
+}
+
+Important: The card should NOT be just a normal LeetCode prompt. It should be a revision/interview-thinking card.
+
+For each card, the prompt must include enough context so I understand the problem immediately without opening LeetCode.
+
+The prompt should include:
+
+1. Problem:
+   - A clear, paraphrased version of the LeetCode problem.
+   - Mention the input and expected output.
+   - Include any important constraint or condition if relevant.
+
+2. Example:
+   - Sample input.
+   - Sample output.
+   - Short explanation if needed.
+
+3. Direct revision question:
+   Ask a focused question that trains pattern recognition and interview reasoning.
+
+Good question styles:
+- What algorithm/pattern should you use, and why?
+- Why is this sliding window / binary search / DP / greedy / graph problem?
+- What is the key condition or invariant?
+- When should the window expand or shrink?
+- Why is this approach better than brute force?
+- Is this solution optimal or brute force? Why?
+- What data structure is needed and why?
+- What is the recurrence relation?
+- Why DP over greedy?
+- Why BFS over DFS, or DFS over BFS?
+- What are the time and space complexities?
+- Given this code, what is the TC/SC and is it optimal?
+- What edge cases should be handled?
+- What is the trick that makes the problem easier?
+
+The solution should include:
+
+1. Pattern:
+   State the pattern clearly.
+   Example: Hash Set, Sliding Window, Two Pointers, Binary Search on Answer, DP, BFS, DFS, Backtracking, Heap, Trie, Union Find, Intervals, Linked List, Stack, Monotonic Stack, etc.
+
+2. Why this pattern:
+   Explain why this pattern fits the problem.
+   Explain why a simpler/brute force approach is worse if relevant.
+
+3. Step-by-step algorithm:
+   Use simple arrows or short bullet-style lines.
+   Example:
+   → Put all numbers into a set.
+   → Only start counting when num - 1 is not present.
+   → Expand forward while consecutive values exist.
+   → Track the maximum length.
+
+4. Key invariant / formula / decision rule:
+   Include the main insight.
+   Examples:
+   - windowLength - maxFrequency <= k
+   - current.start <= lastMerged.end
+   - if nums[mid] > nums[right], minimum is on the right
+   - dp[i] means the best answer up to index i
+   - BFS gives shortest path in unweighted graphs
+
+5. Complexity:
+   Always include:
+   Time: O(...)
+   Space: O(...)
+
+6. Edge cases:
+   Include only if useful.
+   Examples:
+   - empty input
+   - single element
+   - duplicates
+   - zeros
+   - negative numbers
+   - disconnected graph
+   - deleting head node in linked list
+   - impossible case
+
+Tone and format:
+- Keep explanations clear and interview-friendly.
+- Do not overcomplicate.
+- Do not just dump code unless the card specifically asks about code.
+- Use clean formatting with line breaks.
+- Use arrows → for step-by-step reasoning.
+- Avoid vague questions like “Solve this problem.”
+- The card should train me to know what to do and why.
+
+Important distinction:
+Bad prompt:
+"Given an unsorted integer array, return the longest consecutive sequence."
+
+Good prompt:
+"Problem:
+Given an unsorted integer array nums, return the length of the longest consecutive elements sequence.
+
+Example:
+Input: nums = [100, 4, 200, 1, 3, 2]
+Output: 4
+Explanation: The longest consecutive sequence is [1, 2, 3, 4].
+
+Question:
+What algorithm/pattern should you use to solve this in O(n), and why is sorting not the optimal first choice?"
+
+Bad solution:
+"Use set."
+
+Good solution:
+"Pattern:
+Hash Set
+
+Why:
+Sorting gives O(n log n), but the problem can be solved in O(n) using O(1) lookup.
+
+Algorithm:
+→ Put every number into a set.
+→ For each num, only start counting if num - 1 is not in the set.
+→ This means num is the start of a sequence.
+→ Expand forward while num + 1, num + 2, ... exist.
+→ Track the maximum length.
+
+Key insight:
+Only sequence starts trigger counting, so each number is visited at most once.
+
+Time: O(n)
+Space: O(n)"
+
+If generating multiple cards, make each card target a different reasoning skill:
+- pattern recognition
+- brute force vs optimal
+- key invariant
+- algorithm steps
+- TC/SC
+- edge cases
+- code reasoning
+- why one approach over another
+
+For DP cards:
+The prompt should include the problem, example, and ask:
+- What is the state?
+- What is the recurrence?
+- Why DP?
+- Is it 1D or 2D DP?
+- Can space be optimized?
+
+The solution should include:
+- State definition
+- Recurrence
+- Base cases
+- Iteration order
+- Final answer
+- TC/SC
+
+For graph cards:
+The prompt should ask:
+- Is this BFS, DFS, topological sort, Union Find, or Dijkstra?
+- Why?
+- What does each node/edge represent?
+- What visited/state tracking is needed?
+
+The solution should include:
+- Graph modeling
+- Traversal choice
+- Visited/state logic
+- TC/SC
+
+For sliding window cards:
+The prompt should ask:
+- Fixed-size or variable-size window?
+- What condition makes the window invalid?
+- When do we shrink?
+
+The solution should include:
+- Window invariant
+- Expand logic
+- Shrink logic
+- Answer update timing
+- TC/SC
+
+For binary search cards:
+The prompt should ask:
+- Binary search on index or answer?
+- What is the monotonic condition?
+- How do we move left/right?
+
+The solution should include:
+- Search space
+- Feasibility/check condition
+- Pointer update rule
+- TC/SC
+
+For linked list cards:
+The prompt should ask:
+- What pointer technique is needed?
+- Why dummy node?
+- Why slow/fast?
+- Why reverse second half?
+
+The solution should include:
+- Pointer roles
+- Step-by-step mutation
+- Edge cases
+- TC/SC
+
+For every card:
+- Use a useful title.
+- Use correct difficulty.
+- Use relevant tags.
+- Keep prompts context-rich.
+- Keep solutions direct, structured, and memorable.
+
+Now generate a complete JSON deck for the following topic/list:
+
+[PASTE TOPIC OR PROBLEM LIST HERE]
+
+Requirements:
+- Number of cards: [ENTER NUMBER]
+- Difficulty: [Easy / Medium / Hard / Mixed]
+- Style: context-rich revision cards
+- Include TC/SC for every card
+- Make sure JSON is valid and import-ready
