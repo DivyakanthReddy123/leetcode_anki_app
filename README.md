@@ -1,4 +1,3 @@
-```
 # LeetCode Anki App
 
 A clean, mobile-friendly spaced repetition app for revising LeetCode and coding interview problems.
