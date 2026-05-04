@@ -103,7 +103,7 @@ const headerStyle: CSSProperties = {
   background: C.ink,
   color: '#fff',
   display: 'grid',
-  gridTemplateColumns: '44px 1fr 104px',
+  gridTemplateColumns: '72px minmax(0, 1fr) 72px',
   alignItems: 'center',
   padding: '10px 16px',
 };
