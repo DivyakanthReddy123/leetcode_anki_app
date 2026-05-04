@@ -12,12 +12,58 @@ const ratingButtons: Array<{ rating: Rating; time: string; color: string }> = [
 ];
 function difficultyColor(difficulty: string) { return difficulty === 'Easy' ? C.easy : difficulty === 'Medium' ? C.medium : C.hardDiff; }
 
+function stableHash(input: string) {
+  let hash = 0;
+  for (let i = 0; i < input.length; i += 1) {
+    hash = ((hash << 5) - hash + input.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash);
+}
+
+function getTodayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function getCardPriority(card: { reviewState?: string; dueAt?: string | null; reviewCount?: number }) {
+  const now = Date.now();
+
+  // Hard/Again cards become learning cards. Keep them at the front of future sessions.
+  if (card.reviewState === 'learning') return 0;
+
+  // Due review cards should come before brand-new cards.
+  if (card.dueAt && new Date(card.dueAt).getTime() <= now) return 1;
+
+  // New cards are next.
+  if (!card.reviewCount || card.reviewState === 'new') return 2;
+
+  // Easy/Good cards scheduled for the future should go to the end.
+  return 3;
+}
+
 export default function StudyPage() {
   const { deckId } = useParams();
   const navigate = useNavigate();
   const { data, activeCards, rateCard, updateCard, deleteCard } = useAppData();
   const deck = data.decks.find(d => d.id === deckId);
-  const cards = useMemo(() => activeCards.filter(card => card.deckId === deckId), [activeCards, deckId]);
+  const cards = useMemo(() => {
+    const todayKey = getTodayKey();
+
+    return activeCards
+      .filter(card => card.deckId === deckId)
+      .slice()
+      .sort((a, b) => {
+        const priorityDiff = getCardPriority(a) - getCardPriority(b);
+        if (priorityDiff !== 0) return priorityDiff;
+
+        // Learning/due/future-review cards are sorted by due time first.
+        const aDue = a.dueAt ? new Date(a.dueAt).getTime() : Number.POSITIVE_INFINITY;
+        const bDue = b.dueAt ? new Date(b.dueAt).getTime() : Number.POSITIVE_INFINITY;
+        if (aDue !== bDue && (getCardPriority(a) !== 2 || getCardPriority(b) !== 2)) return aDue - bDue;
+
+        // New cards are shuffled in a stable daily order so the same card is not always first.
+        return stableHash(`${todayKey}-${deckId}-${a.id}`) - stableHash(`${todayKey}-${deckId}-${b.id}`);
+      });
+  }, [activeCards, deckId]);
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -27,8 +73,23 @@ export default function StudyPage() {
   function handleRate(rating: Rating) {
     if (!card) return;
     rateCard(card.id, rating);
-    const nextIndex = index + 1;
-    if (nextIndex < cards.length) { setIndex(nextIndex); setRevealed(false); } else { navigate('/'); }
+
+    // After Easy/Good, the card is scheduled into the future, so the queue is re-sorted
+    // and the next best card should become index 0.
+    // After Hard/Again, the card remains learning-priority, so move forward once in the
+    // current session to avoid instantly showing the exact same card again.
+    const shouldMoveForwardInCurrentQueue = rating === 'Again' || rating === 'Hard';
+    const nextIndex = shouldMoveForwardInCurrentQueue ? index + 1 : 0;
+
+    if (cards.length <= 1) {
+      navigate('/');
+      return;
+    }
+
+    setIndex(Math.min(nextIndex, cards.length - 1));
+    setRevealed(false);
+    setMenuOpen(false);
+    setFlagOpen(false);
   }
   function handleRedo() {
     // This top-bar button behaves like AnkiDroid's backward navigation inside the current deck.

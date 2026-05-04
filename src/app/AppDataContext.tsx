@@ -19,6 +19,7 @@ type AppDataContextValue = {
   updateCard: (id: string, patch: Partial<Card>) => void;
   addCard: (input: AddCardInput) => void;
   deleteCard: (id: string) => void;
+  deleteDeck: (deckId: string) => void;
   rateCard: (id: string, rating: Rating) => Review | null;
   undoReview: (reviewId: string) => void;
   importDeck: (payload: DeckImport) => { imported: number; deckName: string };
@@ -250,6 +251,15 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
     updateCard(id, { isDeleted: true });
   }
 
+  function deleteDeck(deckId: string) {
+    setData(prev => ({
+      ...prev,
+      decks: prev.decks.filter(deck => deck.id !== deckId),
+      cards: prev.cards.filter(card => card.deckId !== deckId),
+      reviews: prev.reviews.filter(review => review.deckId !== deckId),
+    }));
+  }
+
   function rateCard(id: string, rating: Rating) {
     let createdReview: Review | null = null;
 
@@ -410,6 +420,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
         updateCard,
         addCard,
         deleteCard,
+        deleteDeck,
         rateCard,
         undoReview,
         importDeck,

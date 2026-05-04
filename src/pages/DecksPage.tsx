@@ -8,6 +8,7 @@ import {
   Plus,
   RefreshCcw,
   Settings,
+  Trash2,
   Upload,
   X,
 } from 'lucide-react';
@@ -24,7 +25,7 @@ const C = {
 
 export default function DecksPage() {
   const navigate = useNavigate();
-  const { data, activeCards, importDeck, exportData } = useAppData();
+  const { data, activeCards, importDeck, exportData, deleteDeck } = useAppData();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [plusOpen, setPlusOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -63,6 +64,14 @@ export default function DecksPage() {
     fileInputRef.current?.click();
   }
 
+  function handleDeleteDeck(deckId: string, deckName: string) {
+    const confirmed = window.confirm(`Delete the deck "${deckName}" and all its cards? This cannot be undone.`);
+    if (!confirmed) return;
+
+    deleteDeck(deckId);
+    showMessage(`Deleted "${deckName}".`);
+  }
+
   return (
     <main style={pageStyle}>
       <header style={headerStyle}>
@@ -99,21 +108,27 @@ export default function DecksPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, textAlign: 'right', fontSize: 13, fontWeight: 800 }}>
           <span style={{ color: C.new }}>New</span><span style={{ color: C.learn }}>Lrn</span><span style={{ color: C.due }}>Due</span>
         </div>
+        <span />
       </section>
 
       <section style={{ background: C.surface }}>
         {deckStats.map(deck => (
-          <button key={deck.id} type="button" onClick={() => navigate(`/study/${deck.id}`)} style={deckRowStyle}>
-            <div>
-              <h2 style={deckTitleStyle}>{deck.name}</h2>
-              <div style={progressTrackStyle}>
-                <i style={{ display: 'block', height: '100%', width: `${deck.total ? Math.min(100, (deck.studied / deck.total) * 100) : 0}%`, background: C.progressFill }} />
+          <div key={deck.id} style={deckRowStyle}>
+            <button type="button" onClick={() => navigate(`/study/${deck.id}`)} style={deckOpenButtonStyle}>
+              <div>
+                <h2 style={deckTitleStyle}>{deck.name}</h2>
+                <div style={progressTrackStyle}>
+                  <i style={{ display: 'block', height: '100%', width: `${deck.total ? Math.min(100, (deck.studied / deck.total) * 100) : 0}%`, background: C.progressFill }} />
+                </div>
               </div>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, textAlign: 'right', fontSize: 20, fontWeight: 800 }}>
-              <span style={{ color: C.new }}>{deck.newCount}</span><span style={{ color: C.learn }}>{deck.learnCount}</span><span style={{ color: C.due }}>{deck.dueCount}</span>
-            </div>
-          </button>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, textAlign: 'right', fontSize: 20, fontWeight: 800 }}>
+                <span style={{ color: C.new }}>{deck.newCount}</span><span style={{ color: C.learn }}>{deck.learnCount}</span><span style={{ color: C.due }}>{deck.dueCount}</span>
+              </div>
+            </button>
+            <button type="button" aria-label={`Delete ${deck.name}`} onClick={() => handleDeleteDeck(deck.id, deck.name)} style={deckDeleteButtonStyle}>
+              <Trash2 size={17} />
+            </button>
+          </div>
         ))}
       </section>
 
@@ -169,8 +184,10 @@ const headerStyle: CSSProperties = { height: 82, background: C.ink, color: '#fff
 const headerIconButton: CSSProperties = { width: 36, height: 36, border: 0, background: 'transparent', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' };
 const titleStyle: CSSProperties = { margin: 0, color: '#fff', fontSize: 21, lineHeight: 1, fontWeight: 800, letterSpacing: '-0.04em' };
 const subtitleStyle: CSSProperties = { margin: '7px 0 0', color: 'rgba(255,255,255,.68)', fontFamily: 'DM Mono, ui-monospace, monospace', fontSize: 13 };
-const deckHeadStyle: CSSProperties = { height: 48, background: C.surface, borderBottom: `1px solid ${C.border}`, display: 'grid', gridTemplateColumns: '1fr 132px', alignItems: 'center', padding: '0 18px' };
-const deckRowStyle: CSSProperties = { width: '100%', minHeight: 78, border: 0, borderBottom: `1px solid ${C.border}`, background: C.surface, display: 'grid', gridTemplateColumns: '1fr 132px', alignItems: 'center', padding: '0 18px', textAlign: 'left', fontFamily: 'DM Sans, Inter, system-ui, sans-serif' };
+const deckHeadStyle: CSSProperties = { height: 48, background: C.surface, borderBottom: `1px solid ${C.border}`, display: 'grid', gridTemplateColumns: '1fr 132px 44px', alignItems: 'center', padding: '0 18px' };
+const deckRowStyle: CSSProperties = { width: '100%', minHeight: 78, borderBottom: `1px solid ${C.border}`, background: C.surface, display: 'grid', gridTemplateColumns: '1fr 44px', alignItems: 'center', padding: '0 18px 0 0' };
+const deckOpenButtonStyle: CSSProperties = { width: '100%', minHeight: 78, border: 0, background: 'transparent', display: 'grid', gridTemplateColumns: '1fr 132px', alignItems: 'center', padding: '0 0 0 18px', textAlign: 'left', fontFamily: 'DM Sans, Inter, system-ui, sans-serif' };
+const deckDeleteButtonStyle: CSSProperties = { width: 34, height: 34, border: 0, borderRadius: 10, background: 'transparent', color: C.muted, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', justifySelf: 'end' };
 const deckTitleStyle: CSSProperties = { margin: 0, color: C.ink, fontSize: 20, lineHeight: 1.1, fontWeight: 800, letterSpacing: '-0.04em' };
 const progressTrackStyle: CSSProperties = { width: '100%', maxWidth: 260, height: 3, background: C.progress, marginTop: 10, borderRadius: 999, overflow: 'hidden' };
 const footerStyle: CSSProperties = { position: 'fixed', left: 0, right: 0, bottom: 0, height: 54, background: C.surface, borderTop: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', padding: '0 18px', zIndex: 40 };
