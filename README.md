@@ -10,10 +10,9 @@ The main idea behind this app is simple:
 
 ## Live App
 
-If deployed on Vercel, add your link here:
-
-```txt
+Vercel link :
 leetcode-anki-app.vercel.app
+
 
 
 ## Features
